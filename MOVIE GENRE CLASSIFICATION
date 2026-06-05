@@ -99,3 +99,65 @@ print("\n====================")
 print("CUSTOM PREDICTION")
 print("====================")
 print("Predicted Genre:", prediction[0])
+
+OUTPUT:
+MOVIE GENRE CLASSIFICATION USING SVM
+ZIP Extracted Successfully!
+LOADING DATASET
+Dataset Shape: (54214, 3)
+                                   ID       Genre  \
+1       Oscar et la dame rose (2009)       drama    
+2                       Cupid (1997)    thriller    
+3   Young, Wild and Wonderful (1980)       adult    
+4              The Secret Sin (1915)       drama    
+5             The Unrecovered (2007)       drama    
+
+                                         Description  
+1   Listening in to a conversation between his do...  
+2   A brother and sister with a past incestuous r...  
+3   As the bus empties the students for their fie...  
+4   To help their unemployed father make ends mee...  
+5   The film's title refers not only to the un-re...  
+TRAIN TEST SPLIT
+TF-IDF VECTORIZATION
+TF-IDF Shape: (43371, 10000)
+TRAINING SVM MODEL
+Model Training Completed!
+MODEL EVALUATION
+Accuracy: 0.568569584063451
+               precision    recall  f1-score   support
+
+      action        0.44      0.34      0.38       263
+       adult        0.68      0.44      0.53       112
+   adventure        0.37      0.29      0.33       139
+   animation        0.33      0.14      0.20       104
+   biography        0.00      0.00      0.00        61
+      comedy        0.52      0.58      0.55      1443
+       crime        0.11      0.04      0.06       107
+ documentary        0.70      0.80      0.75      2659
+       drama        0.56      0.69      0.62      2697
+      family        0.25      0.13      0.17       150
+     fantasy        0.00      0.00      0.00        74
+   game-show        0.77      0.68      0.72        40
+     history        0.00      0.00      0.00        45
+      horror        0.62      0.62      0.62       431
+       music        0.54      0.53      0.54       144
+     musical        0.00      0.00      0.00        50
+     mystery        0.06      0.02      0.03        56
+        news        0.08      0.03      0.04        34
+  reality-tv        0.44      0.26      0.33       192
+     romance        0.23      0.06      0.09       151
+      sci-fi        0.44      0.30      0.36       143
+       short        0.41      0.36      0.38      1045
+       sport        0.57      0.42      0.48        93
+   talk-show        0.55      0.20      0.29        81
+    thriller        0.29      0.17      0.22       309
+         war        0.50      0.05      0.09        20
+     western        0.82      0.79      0.80       200
+
+     accuracy                           0.57     10843
+    macro avg       0.38      0.29      0.32     10843
+ weighted avg       0.53      0.57      0.54     10843
+
+CUSTOM MOVIE GENRE PREDICTION
+Predicted Genre:  sci-fi
