@@ -1,1 +1,101 @@
+GOOGLE COLAB LINK:https://colab.research.google.com/drive/1s6Yl9cW0cC39qrPZv57bxzZ0AcfwHweg?usp=sharing
+CODE:
+# MOVIE GENRE CLASSIFICATION
+# TF-IDF + SVM
 
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.svm import LinearSVC
+from sklearn.metrics import accuracy_score, classification_report
+import zipfile
+
+# EXTRACT ZIP FILE
+
+zip_path = "/content/archive (2).zip"
+
+with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+    zip_ref.extractall('/content/dataset')
+
+print("ZIP Extracted Successfully!")
+
+# LOAD TRAIN DATA
+
+df = pd.read_csv(
+    "/content/dataset/Genre Classification Dataset/train_data.txt",
+    sep=":::",
+    engine="python",
+    header=None,
+    names=["ID", "Genre", "Description"]
+)
+
+print("\nDataset Shape:", df.shape)
+print("\nFirst 5 Rows:")
+print(df.head())
+
+# TRAIN TEST SPLIT
+
+X = df["Description"]
+y = df["Genre"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42
+)
+
+# TF-IDF VECTORIZATION
+
+tfidf = TfidfVectorizer(
+    stop_words='english',
+    max_features=10000,
+    ngram_range=(1,2)
+)
+
+X_train_tfidf = tfidf.fit_transform(X_train)
+X_test_tfidf = tfidf.transform(X_test)
+
+print("\nTF-IDF Shape:", X_train_tfidf.shape)
+
+# TRAIN SVM MODEL
+
+model = LinearSVC()
+
+model.fit(X_train_tfidf, y_train)
+
+print("\nModel Training Completed!")
+
+# PREDICTION
+
+y_pred = model.predict(X_test_tfidf)
+
+# EVALUATION
+
+accuracy = accuracy_score(y_test, y_pred)
+
+print("\n====================")
+print("MODEL ACCURACY")
+print("====================")
+print("Accuracy:", accuracy)
+
+print("\n====================")
+print("CLASSIFICATION REPORT")
+print("====================")
+print(classification_report(y_test, y_pred))
+
+# CUSTOM MOVIE PREDICTION
+
+sample_plot = """
+A group of astronauts travel through space
+to find a new habitable planet for humanity.
+"""
+
+sample_vector = tfidf.transform([sample_plot])
+
+prediction = model.predict(sample_vector)
+
+print("\n====================")
+print("CUSTOM PREDICTION")
+print("====================")
+print("Predicted Genre:", prediction[0])
