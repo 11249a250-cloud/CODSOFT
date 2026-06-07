@@ -1,0 +1,114 @@
+GOOGLE COLAB LINK:https://colab.research.google.com/drive/1Eo7VZLB0SeA3z5J6UM-jHOP6MdbUz9uR?usp=sharing
+CODE:
+rom google.colab import files
+
+uploaded = files.upload()
+!ls /content
+import zipfile
+
+with zipfile.ZipFile('/content/archive (4).zip', 'r') as zip_ref:
+    zip_ref.extractall('/content/dataset')
+
+print("ZIP Extracted Successfully!")
+import os
+
+for root, dirs, files in os.walk('/content/dataset'):
+    for file in files:
+        print(os.path.join(root, file))
+# CUSTOMER CHURN PREDICTION USING RANDOM FOREST
+
+# Import required libraries
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+# Load dataset
+df = pd.read_csv('/content/dataset/Churn_Modelling.csv')
+
+print("Dataset Shape:", df.shape)
+
+# Remove unnecessary columns
+df = df.drop(['RowNumber', 'CustomerId', 'Surname'], axis=1)
+
+# Convert categorical columns into numerical values
+le = LabelEncoder()
+
+df['Geography'] = le.fit_transform(df['Geography'])
+df['Gender'] = le.fit_transform(df['Gender'])
+
+# Separate features and target variable
+X = df.drop('Exited', axis=1)
+y = df['Exited']
+
+# Split dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42
+)
+
+# Create Random Forest model
+model = RandomForestClassifier(
+    n_estimators=100,
+    random_state=42
+)
+
+# Train the model
+model.fit(X_train, y_train)
+
+print("Model Training Completed!")
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Calculate accuracy
+accuracy = accuracy_score(y_test, y_pred)
+
+print("\nAccuracy:", accuracy)
+
+# Display classification report
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+# Display confusion matrix
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+# Predict churn for one customer
+sample_customer = X_test.iloc[[0]]
+
+prediction = model.predict(sample_customer)
+
+print("\nCustomer Churn Prediction:")
+
+if prediction[0] == 1:
+    print("Customer Will Leave (Churn)")
+else:
+    print("Customer Will Stay")
+
+OUTPUT:
+Dataset Shape: (10000, 14)
+Model Training Completed!
+
+Accuracy: 0.8645
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.88      0.96      0.92      1607
+           1       0.75      0.47      0.57       393
+
+    accuracy                           0.86      2000
+   macro avg       0.82      0.71      0.75      2000
+weighted avg       0.85      0.86      0.85      2000
+
+
+Confusion Matrix:
+[[1546   61]
+ [ 210  183]]
+
+Customer Churn Prediction:
+Customer Will Stay
