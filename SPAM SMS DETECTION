@@ -1,0 +1,116 @@
+GOOGLE COLAB LINK:https://colab.research.google.com/drive/1f8fCQChGlVYIS4SBrT9seIws6fHIPp0R?usp=sharing
+CODE:
+from google.colab import files
+uploaded = files.upload()
+!ls /content
+import zipfile
+with zipfile.ZipFile('/content/archive (5).zip', 'r') as zip_ref:
+    zip_ref.extractall('/content/dataset')
+print("ZIP Extracted Successfully!")
+import os
+for root, dirs, files in os.walk('/content/dataset'):
+    for file in files:
+        print(os.path.join(root, file))
+# SMS SPAM DETECTION USING TF-IDF AND NAIVE BAYES
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score, classification_report
+import zipfile
+
+# Extract ZIP file
+with zipfile.ZipFile('/content/archive (5).zip', 'r') as zip_ref:
+    zip_ref.extractall('/content/dataset')
+
+print("ZIP Extracted Successfully!")
+
+# Load dataset
+df = pd.read_csv('/content/dataset/spam.csv', encoding='latin-1')
+
+print("Dataset Shape:", df.shape)
+
+# Keep only required columns
+df = df[['v1', 'v2']]
+
+# Rename columns
+df.columns = ['label', 'message']
+
+# Convert labels into numbers
+df['label'] = df['label'].map({
+    'ham': 0,
+    'spam': 1
+})
+
+# Features and target
+X = df['message']
+y = df['label']
+
+# Train Test Split
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42
+)
+
+# TF-IDF Vectorization
+tfidf = TfidfVectorizer(stop_words='english')
+
+X_train_tfidf = tfidf.fit_transform(X_train)
+X_test_tfidf = tfidf.transform(X_test)
+
+# Train Naive Bayes Model
+model = MultinomialNB()
+
+model.fit(X_train_tfidf, y_train)
+
+print("Model Training Completed!")
+
+# Predictions
+y_pred = model.predict(X_test_tfidf)
+
+# Accuracy
+accuracy = accuracy_score(y_test, y_pred)
+
+print("\nAccuracy:", accuracy)
+
+# Classification Report
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+# Custom SMS Prediction
+sample_sms = "Congratulations! You won a free iPhone. Click here to claim now."
+
+sample_vector = tfidf.transform([sample_sms])
+
+prediction = model.predict(sample_vector)
+
+print("\nSMS Prediction:")
+
+if prediction[0] == 1:
+    print("Spam Message")
+else:
+    print("Legitimate Message")
+
+OUTPUT:
+ZIP Extracted Successfully!
+Dataset Shape: (5572, 5)
+Model Training Completed!
+
+Accuracy: 0.9668161434977578
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.96      1.00      0.98       965
+           1       1.00      0.75      0.86       150
+
+    accuracy                           0.97      1115
+   macro avg       0.98      0.88      0.92      1115
+weighted avg       0.97      0.97      0.96      1115
+
+
+SMS Prediction:
+Spam Message
